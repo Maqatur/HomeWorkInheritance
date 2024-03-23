@@ -45,4 +45,7 @@ public class Todos {
         return result;
     }
 
+    public Task[] getTasks() {
+        return tasks;
+    }
 }

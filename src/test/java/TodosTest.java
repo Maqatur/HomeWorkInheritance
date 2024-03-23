@@ -6,8 +6,8 @@ public class TodosTest {
     @Test
     public void shouldAddThreeTasksOfDifferentType() {
         SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям");
-
         String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
+
         Epic epic = new Epic(55, subtasks);
 
         Meeting meeting = new Meeting(
@@ -32,10 +32,9 @@ public class TodosTest {
     public void paramQueryTestForSimpleTaskIfItMatches() {
 
         SimpleTask simpleTask = new SimpleTask(6, "Позвонить другу");
-        simpleTask.matches("Позвонить другу");
 
         boolean expected = true;
-        boolean actual = simpleTask.matches("Позвонить другу");
+        boolean actual = simpleTask.matches("Позвонить");
 
         Assertions.assertEquals(expected, actual);
     }
@@ -44,11 +43,9 @@ public class TodosTest {
     public void paramQueryTestForSimpleTaskIfItNoMatch() {
 
         SimpleTask simpleTask = new SimpleTask(6, "Позвонить другу");
-        simpleTask.matches("Позвонить брату");
 
         boolean expected = false;
         boolean actual = simpleTask.matches("Позвонить брату");
-        ;
 
         Assertions.assertEquals(expected, actual);
 
@@ -57,7 +54,6 @@ public class TodosTest {
     @Test
     public void paramQueryTestForMeetingIfItMatchesTopic() {
         Meeting meeting = new Meeting(12, "Встреча в парке", "Романтика", "8 марта");
-        meeting.matches("Встреча в парке");
 
         boolean expected = true;
         boolean actual = meeting.matches("Встреча в парке");
@@ -68,7 +64,6 @@ public class TodosTest {
     @Test
     public void paramQueryTestForMeetingIfItNoMatchTopic() {
         Meeting meeting = new Meeting(12, "Встреча в парке", "Романтика", "8 марта");
-        meeting.matches("Встреча в офисе");
 
         boolean expected = false;
         boolean actual = meeting.matches("Встреча в офисе");
@@ -79,7 +74,6 @@ public class TodosTest {
     @Test
     public void paramQueryTestForMeetingIfItMatchesProject() {
         Meeting meeting = new Meeting(12, "Встреча в парке", "Романтика", "8 марта");
-        meeting.matches("Романтика");
 
         boolean expected = true;
         boolean actual = meeting.matches("Романтика");
@@ -90,7 +84,6 @@ public class TodosTest {
     @Test
     public void paramQueryTestForMeetingIfItNoMatchProject() {
         Meeting meeting = new Meeting(12, "Встреча в парке", "Романтика", "8 марта");
-        meeting.matches("Работа");
 
         boolean expected = false;
         boolean actual = meeting.matches("Работа");
@@ -102,7 +95,7 @@ public class TodosTest {
     public void paramQueryTestForEpicIfItMatches() {
         String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
         Epic epic = new Epic(55, subtasks);
-        epic.matches("Яйца");
+
         boolean expected = true;
         boolean actual = epic.matches("Яйца");
 
@@ -114,7 +107,7 @@ public class TodosTest {
     public void paramQueryTestForEpicIfItNoMatch() {
         String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
         Epic epic = new Epic(55, subtasks);
-        epic.matches("Пельмени");
+
         boolean expected = false;
         boolean actual = epic.matches("Пельмени");
 
@@ -123,105 +116,66 @@ public class TodosTest {
     }
 
     @Test
-    public void todosSimpleTaskQueryPositiveTest() {
-        SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям");
+    public void thereAreSeveralTasksTest() {
+        SimpleTask simpleTask = new SimpleTask(5, "Купить Молоко");
 
-        Todos todos = new Todos();
-        todos.add(simpleTask);
-        todos.search("Позвонить родителям");
-
-        Task[] expected = {simpleTask};
-        Task[] actual = todos.search("Позвонить родителям");
-        Assertions.assertArrayEquals(expected, actual);
-
-
-    }
-
-    @Test
-    public void todosEpicQueryPositiveTest() {
         String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
         Epic epic = new Epic(55, subtasks);
 
-        Todos todos = new Todos();
-        todos.add(epic);
-        todos.search("Молоко");
+        Meeting meeting = new Meeting(
+                555,
+                "Выкатка 3й версии приложения",
+                "Приложение НетоБанка",
+                "Во вторник после обеда"
+        );
 
-        Task[] expected = {epic};
+        Todos todos = new Todos();
+
+        todos.add(simpleTask);
+        todos.add(epic);
+        todos.add(meeting);
+
+
+        Task[] expected = {simpleTask, epic};
         Task[] actual = todos.search("Молоко");
+
         Assertions.assertArrayEquals(expected, actual);
-
     }
 
     @Test
-    public void todosMeetingQueryPositiveTestP1() {
-        Meeting meeting = new Meeting(
-                555,
-                "Выкатка 3й версии приложения",
-                "Приложение НетоБанка",
-                "Во вторник после обеда"
-        );
+    public void thereIsOneTaskTest() {
+        SimpleTask simpleTask = new SimpleTask(5, "Купить Молоко");
 
-        Todos todos = new Todos();
-        todos.add(meeting);
-        todos.search("Выкатка 3й версии приложения");
-
-        Task[] expected = {meeting};
-        Task[] actual = todos.search("Выкатка 3й версии приложения");
-        Assertions.assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    public void todosMeetingQueryPositiveTestP2() {
-        Meeting meeting = new Meeting(
-                555,
-                "Выкатка 3й версии приложения",
-                "Приложение НетоБанка",
-                "Во вторник после обеда"
-        );
-
-        Todos todos = new Todos();
-        todos.add(meeting);
-        todos.search("Приложение НетоБанка");
-
-        Task[] expected = {meeting};
-        Task[] actual = todos.search("Приложение НетоБанка");
-        Assertions.assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    public void todosSimpleTaskQueryNegativeTest() {
-        SimpleTask simpleTask = new SimpleTask(5, "Позвонить родителям");
-
-        Todos todos = new Todos();
-        todos.add(simpleTask);
-        todos.search("Позвонить другу");
-
-        boolean expected = false;
-        boolean actual = simpleTask.matches("Позвонить другу");
-        Assertions.assertEquals(expected, actual);
-
-
-    }
-
-    @Test
-    public void todosEpicQueryNegativeTest() {
         String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
         Epic epic = new Epic(55, subtasks);
 
+        Meeting meeting = new Meeting(
+                555,
+                "Выкатка 3й версии приложения",
+                "Приложение НетоБанка",
+                "Во вторник после обеда"
+        );
+
         Todos todos = new Todos();
+
+        todos.add(simpleTask);
         todos.add(epic);
-        todos.search("Milk");
+        todos.add(meeting);
 
-        boolean expected = false;
-        boolean actual = epic.matches("Milk");
 
-        Assertions.assertEquals(expected, actual);
+        Task[] expected = {meeting};
+        Task[] actual = todos.search("Выкатка");
+
+        Assertions.assertArrayEquals(expected, actual);
     }
 
     @Test
-    public void todosMeetingQueryNegativeTestP1() {
+    public void thereAreNoTasksTest() {
+        SimpleTask simpleTask = new SimpleTask(5, "Купить Молоко");
+
+        String[] subtasks = {"Молоко", "Яйца", "Хлеб"};
+        Epic epic = new Epic(55, subtasks);
+
         Meeting meeting = new Meeting(
                 555,
                 "Выкатка 3й версии приложения",
@@ -230,32 +184,16 @@ public class TodosTest {
         );
 
         Todos todos = new Todos();
+
+        todos.add(simpleTask);
+        todos.add(epic);
         todos.add(meeting);
-        todos.search("Выкатка третьей версии приложения");
 
-        boolean expected = false;
-        boolean actual = meeting.matches("Выкатка третьей версии приложения");
 
-        Assertions.assertEquals(expected, actual);
-    }
+        Task[] expected = { };
+        Task[] actual = todos.search("Пельмени");
 
-    @Test
-    public void todosMeetingQueryNegativeTestP2() {
-        Meeting meeting = new Meeting(
-                555,
-                "Выкатка 3й версии приложения",
-                "Приложение НетоБанка",
-                "Во вторник после обеда"
-        );
-
-        Todos todos = new Todos();
-        todos.add(meeting);
-        todos.search("Приложение Не тоБанка");
-
-        boolean expected = false;
-        boolean actual = meeting.matches("Приложение Не тоБанка");
-
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertArrayEquals(expected, actual);
     }
 
     @Test
